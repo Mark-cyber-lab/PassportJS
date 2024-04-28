@@ -11,39 +11,47 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <form action="" method="post">
-            <input type="text" name="username" id="username">
-            <input type="text" name="password" id="pass">
-            <input type="submit" name="" id="">
-        </form>
-        
-        <script async defer>
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("pass").value;
 
-            const response = await fetch('/login',{
-                method: 'POST',
-                headers: {
-                    'Content-Type' : 'application/json'
-                },
-                body: JSON.stringify({username, password})
-            });
+        <script>
+            async function submitData(username, password){
+                //var username = document.getElementById("username").value;
+                //var password = document.getElementById("pass").value;
+                console.log(username + " " + password);
 
-            const data = await response.json();
-            const {token} = data;
+                const response =  await fetch('/login',{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    },
+                    body: JSON.stringify({username, password})
+                });
 
-            localStorage.setItem('access_token', token);
+                const data =  await response.json();
+                console.log(data)
+                const {token} = data;
 
-            fetch('/profile', {
-                method: 'GET',
-                headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization' : localStorage.getItem('access_token')
-                }
-            })
+                localStorage.setItem('access_token', token);
+
+                await fetch('/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type' : 'application/json',
+                        'Authorization' : 'Bearer' + localStorage.getItem('access_token')
+                    }
+                })
+
+                const profileData = await response.json();
+                console.log(profileData);
+            }
 
         </script>
+        
+    </head>
+    <body>
+        <form>
+            <input type="text" name="username" id="username">
+            <input type="text" name="password" id="pass">
+            <button onclick="submitData(this.username, this.password)">Submit</button>
+        </form>
     </body>
 </html>

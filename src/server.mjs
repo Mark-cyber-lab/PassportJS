@@ -54,7 +54,7 @@ passport.use(new BearerStrategy(
         }
     }
 ));
-
+ 
 app.get('/profile', passport.authenticate('bearer', { session: false }), (req, res) => {
   // This route is only accessible with a valid token
   res.send('Welcome to the protected route!');
@@ -65,7 +65,7 @@ app.get('/loginAttempt', (req, res) => {
 })
 
 // Login route (generates and returns token)
-app.post('/login', (req, res) => {
+app.post('/login', async  (req, res) => {
     const { username, password } = req.body;
 
     // Authenticate user (replace this with your actual authentication logic)
@@ -76,10 +76,10 @@ app.post('/login', (req, res) => {
     }
     // Generate token
     const token = generateToken(User);
-    res.body('Bearer ' + token);
-    console.log(req.headers['Authorization'])
-    console.log(jwt.verify(token, 'your_secret_key'))
-    res.send("token successfully created");
+    const decoded = jwt.verify(token, 'your_secret_key');
+    console.log(decoded.payload);
+    console.log("token successfully created!");
+    res.json({token});
 
 });
 
