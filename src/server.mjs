@@ -76,7 +76,7 @@ app.post('/login', (req, res) => {
     }
     // Generate token
     const token = generateToken(User);
-    res.headers['Authorization'] = 'Bearer ' + token;
+    res.body('Bearer ' + token);
     console.log(req.headers['Authorization'])
     console.log(jwt.verify(token, 'your_secret_key'))
     res.send("token successfully created");
