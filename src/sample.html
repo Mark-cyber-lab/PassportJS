@@ -42,9 +42,19 @@
 
                     const access_token = await response.json();
 
-                    localStorage.setItem('access_token', access_token);
+                    localStorage.setItem('access_token', access_token.token);
 
-                    
+                    const token = localStorage.getItem('access_token');
+                    console.log(token);
+                    fetch('/profile', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization' : await localStorage.getItem('access_token')
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
                 }
                 catch{
                     console.log("error");
