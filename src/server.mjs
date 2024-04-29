@@ -11,9 +11,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Use __dirname in your Express routes or middleware
 app.use(express.static(__dirname + '/public'));
+
+// Passport setup
+app.use(passport.initialize());
 
 // Function to generate JWT token
 function generateToken(user) {
@@ -34,8 +38,7 @@ function getUserFromToken(token) {
     }
 }
 
-// Passport setup
-app.use(passport.initialize());
+
 
 // Bearer strategy setup
 passport.use(new BearerStrategy(
@@ -65,8 +68,14 @@ app.get('/loginAttempt', (req, res) => {
 })
 
 // Login route (generates and returns token)
-app.post('/login', async  (req, res) => {
-    const { username, password } = req.body;
+app.post('/login', (req, res) => {
+    const {
+        username,
+        password
+    } = req.body;
+
+    //const { username, password } = await JSON.parse(req.body);
+    console.log(username + "\n" + password);
 
     // Authenticate user (replace this with your actual authentication logic)
     const User = user.find(user => user.username === username && user.password === password);
@@ -74,10 +83,10 @@ app.post('/login', async  (req, res) => {
     if (!User) {
         return res.status(401).json({ message: 'Authentication failed' });
     }
+
     // Generate token
-    const token = generateToken(User);
-    const decoded = jwt.verify(token, 'your_secret_key');
-    console.log(decoded.payload);
+    const token = 'Bearer ' + generateToken(User);
+
     console.log("token successfully created!");
     res.json({token});
 
